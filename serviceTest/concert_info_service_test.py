@@ -1,5 +1,4 @@
 from service.concert_info_service import ConcertInfoService
-from model.concert_info import ConcertInfo
 
 
 class ConcertInfoServiceTest():

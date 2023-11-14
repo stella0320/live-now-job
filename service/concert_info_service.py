@@ -28,7 +28,6 @@ class ConcertInfoService():
             try:
                 self.__session__.add(ConcertInfo(**data_obj))
                 self.__session__.commit()
-                self.__session__.close()
             except Exception as e:
                 self.__session__.rollback()
                 print(str(e))

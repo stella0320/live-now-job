@@ -3,7 +3,6 @@ from sqlalchemy import URL
 from sqlalchemy.orm import sessionmaker
 import os
 
-
 class ConnectDb():
 
     def __init__(self):
@@ -13,6 +12,7 @@ class ConnectDb():
         
     # https://docs.sqlalchemy.org/en/20/core/engines.html#mysql
     def get_engine(self):
+        engine = None
         try:
             url_object = URL.create(
                     "mysql+pymysql",
@@ -21,7 +21,10 @@ class ConnectDb():
                     host=self.host,
                     database=os.getenv('DB_DATABASE'),
             )
-            engine = create_engine(url_object, pool_size=50)
+            # url = "mysql://root:root@localhost/live_now"
+            # engine = create_engine(url, pool_size=20)
+            engine = create_engine(url_object, pool_size=20)
+            # engine = create_engine(url_object, pool_size=50, echo=True)
         except Exception as e:
             print(msg=str(e))
         return engine

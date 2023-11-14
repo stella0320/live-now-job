@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from retry import retry
 from retry.api import retry_call
 # 拓元爬蟲
-
+from multiprocessing import Process, Pool
 
 class TixCraftCrawler():
     
@@ -66,6 +66,7 @@ class TixCraftCrawler():
 
         return ticket_list
 
+    
 
 
 

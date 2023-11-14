@@ -1,9 +1,14 @@
 from crawler.tixcraftCrawler import TixCraftCrawler
 from service.concert_info_service import ConcertInfoService
 from util.aws.s3_upload_file_api import S3UploadFileApi
+from service.concert_time_table_service import ConcertTimeTableService
 from openai import OpenAI
 import os
 import json
+from datetime import datetime
+
+from service.singer_info_service import SingerInfoService
+from service.concert_location_service import ConcertLocationService
 # 爬蟲
 
 tixCraftCrawler = TixCraftCrawler()
@@ -11,21 +16,19 @@ tixCraftCrawler = TixCraftCrawler()
 def save_concert_info_data(concert_item):
     item_data = tixCraftCrawler.handle_one_concert_page(concert_item)
     
-    db_service = ConcertInfoService()
-    db_concert_list = db_service.find_concert_info_by_name(item_data['concert_info_name'])
+    db_service1 = ConcertInfoService()
+    db_concert_list = db_service1.find_concert_info_by_name(item_data['concert_info_name'])
     
     # 演唱會清單先存DB
     if not db_concert_list:
-        db_service = ConcertInfoService()
-        db_service.create_concert_info(item_data)
-
-        db_service = ConcertInfoService()
-        db_concert_list = db_service.find_concert_info_by_name(item_data['concert_info_name'])
+        db_service2 = ConcertInfoService()
+        db_service2.create_concert_info(item_data)
+        db_service3 = ConcertInfoService()
+        db_concert_list = db_service3.find_concert_info_by_name(item_data['concert_info_name'])
     else:
-        
         concert_info_id = getattr(db_concert_list[0], 'concert_info_id')
-        db_service = ConcertInfoService()
-        db_service.update_column_values_by_id(item_data, concert_info_id)
+        db_service4 = ConcertInfoService()
+        db_service4.update_column_values_by_id(item_data, concert_info_id)
 
     if db_concert_list:
         concert_info_id = getattr(db_concert_list[0], 'concert_info_id')
@@ -65,7 +68,7 @@ def transfer_json_data_by_chat_gpt(concert_content):
         completion = client.chat.completions.create(
             model="gpt-3.5-turbo-1106",
             messages=[
-                {"role": "system", "content": "You will be provided with unstructured chinese html text, and your task is to parse it into json format like this {'concert_time': list of YYYY-MM-E hh:mm, 'sell_ticket_time': list of  YYYY-MM-EE hh:mm, concert_singer: list of string ,concert_location:string}."},
+                {"role": "system", "content": "You will be provided with unstructured chinese html text, and your task is to parse it into json format like this {'concert_time': list of YYYY-MM-E hh:mm, 'sell_ticket_time': list of  YYYY-MM-EE hh:mm, concert_singer_name: string ,concert_location:string}."},
                 {"role": "user", "content": concert_content}
             ],
             temperature=0,
@@ -84,6 +87,56 @@ def transfer_json_data_by_chat_gpt(concert_content):
             print(str(e))
     return None
 
+def save_concert_all_data(data):
+    if data:
+
+        # concert singer update
+        singer_info_service = SingerInfoService()
+        signer_id = singer_info_service.find_singer_info_by_name_or_create_new(data['concert_singer_name'])
+
+        # concert location update
+        concert_location_service = ConcertLocationService()
+        concert_location_id = concert_location_service.find_concert_location_by_name_or_create_new(data['concert_location_name'])
+
+        # update concert info
+        concert_info_id = data['concert_info_id']
+
+        concert_info_service = ConcertInfoService()
+        concert_info_update_data = {
+            'concert_info_location_id': concert_location_id,
+            'concert_info_singer_id':signer_id
+        }
+        concert_info_service.update_column_values_by_id(concert_info_update_data, concert_info_id)
+
+        def handle_concert_time_data(time_data, concert_info_id, time_table_type):
+            result = []
+            for data in time_data:
+                date_obj = datetime.strptime(data, '%Y-%m-%d %H:%M')
+                item = {
+                    'concert_time_table_type':time_table_type,
+                    'concert_info_id':concert_info_id,
+                    'concert_time_table_datetime': date_obj
+                }
+                result.append(item)
+            
+            return result
+
+        # concert_time_table
+        concert_time = data['concert_time']
+        sell_ticket_time = data['sell_ticket_time']
+
+        concert_time_table_service = ConcertTimeTableService()
+        concert_time_table_service.delete_concert_time_table_by_concert_info_id(concert_info_id)
+
+        if concert_time and len(concert_time) > 0:
+            concert_time_list = handle_concert_time_data(concert_time, concert_info_id, '演出時間')
+            concert_time_table_service_for_concert_time = ConcertTimeTableService()
+            concert_time_table_service_for_concert_time.creat_concert_time_list(concert_time_list)
+
+        if sell_ticket_time and len(sell_ticket_time) > 0:
+            sell_ticket_time_list = handle_concert_time_data(sell_ticket_time, concert_info_id, '售票時間')
+            concert_time_table_service_for_sell_ticket_time = ConcertTimeTableService()
+            concert_time_table_service_for_sell_ticket_time.creat_concert_time_list(sell_ticket_time_list)
 
 
 ########################main##################################
@@ -94,7 +147,9 @@ if concert_list:
         try:
             print('=========存資料開始========')
             item_data = save_concert_info_data(concert_item)
-
+            
+            if not item_data:
+                continue
             print('=========存資料結束========')
             # 和S3上的文本比對內容是否一致
             check_s3_result = check_s3_content_same(item_data)
@@ -109,25 +164,15 @@ if concert_list:
 
                 item_data['concert_time'] = concert_json_data['concert_time']
                 item_data['sell_ticket_time'] = concert_json_data['sell_ticket_time']
-                item_data['concert_singer_name'] = concert_json_data['concert_singer']
+                item_data['concert_singer_name'] = concert_json_data['concert_singer_name']
                 item_data['concert_location_name'] = concert_json_data['concert_location']
                 result.append(item_data)
         except AttributeError as e:
             print(f"Exception:{e}")
             continue
 
-print(result)
-
 
 #####處理資料#####
-
-
-
-
-
-
-
-
-
-
-
+if len(result) > 0:
+    for data in result:
+        save_concert_all_data(data)
