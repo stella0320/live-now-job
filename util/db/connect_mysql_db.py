@@ -14,6 +14,7 @@ class ConnectDb():
     def get_engine(self):
         engine = None
         try:
+            print('host:'+ str(self.host))
             url_object = URL.create(
                     "mysql+pymysql",
                     username=self.user_name,
