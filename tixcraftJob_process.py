@@ -42,5 +42,7 @@ if __name__ == '__main__':
     print('-start-')
     tixCraftCrawler = TixCraftCrawler()
     all_concert_list = tixCraftCrawler.handle_tixcraft_all_concert()
-    all_concert_json_data = [save_concert_info_data(concert) for concert in all_concert_list if concert]
-    print(all_concert_json_data)
+    if all_concert_list:
+        print('-tixCraftCrawler-')
+        all_concert_json_data = [save_concert_info_data(concert) for concert in all_concert_list if concert]
+        print(all_concert_json_data)
