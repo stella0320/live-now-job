@@ -2,7 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy import URL
 from sqlalchemy.orm import sessionmaker
 import os
-
+from dotenv import load_dotenv
+load_dotenv()
 class ConnectDb():
 
     def __init__(self):
