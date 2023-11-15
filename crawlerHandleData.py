@@ -151,7 +151,7 @@ class CrawlerHandleData():
             concert_location_id = concert_location_service.find_concert_location_by_name_or_create_new(concert_location_name)
 
             # update concert info
-            concert_info_id = data['concert_info_id']
+            concert_info_id = getattr(data, 'concert_info_id', None)
 
             concert_info_service = ConcertInfoService()
             concert_info_update_data = {
@@ -163,8 +163,8 @@ class CrawlerHandleData():
             
 
             # concert_time_table
-            concert_time = data['concert_time']
-            sell_ticket_time = data['sell_ticket_time']
+            concert_time = getattr(data, 'concert_time', None)
+            sell_ticket_time = getattr(data, 'sell_ticket_time', None)
 
             concert_time_table_service = ConcertTimeTableService()
             concert_time_table_service.delete_concert_time_table_by_concert_info_id(concert_info_id)
