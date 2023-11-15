@@ -7,7 +7,7 @@ from openai import OpenAI
 import os
 import json
 from datetime import datetime
-
+from retry.api import retry_call
 
 class CrawlerHandleData():
     
@@ -67,25 +67,27 @@ class CrawlerHandleData():
             'concert_content': concert_page_content
         }
     
+    def chat_gpt_api(self, concert_content = None):
+        client = OpenAI(
+                api_key=os.getenv('OPEN_AI_KEY'),
+                timeout=20.0
+            )
 
+        completion = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You will be provided with unstructured chinese html text, and your task is to parse it into json format like this {'concert_time': list of YYYY-MM-E hh:mm, 'sell_ticket_time': list of  YYYY-MM-EE hh:mm, concert_singer_name: string ,concert_location:string}."},
+                {"role": "user", "content": concert_content}
+            ],
+            temperature=0,
+            max_tokens=500
+        )
+        return completion
     # Open AI API
     def transfer_json_data_by_chat_gpt(self, concert_content):
         if concert_content:
-            client = OpenAI(
-                api_key=os.getenv('OPEN_AI_KEY'),
-            )
-
-            completion = client.chat.completions.create(
-                model="gpt-3.5-turbo-1106",
-                messages=[
-                    {"role": "system", "content": "You will be provided with unstructured chinese html text, and your task is to parse it into json format like this {'concert_time': list of YYYY-MM-E hh:mm, 'sell_ticket_time': list of  YYYY-MM-EE hh:mm, concert_singer_name: string ,concert_location:string}."},
-                    {"role": "user", "content": concert_content}
-                ],
-                temperature=0,
-                max_tokens=500
-            )
-
             try:
+                completion = retry_call(self.chat_gpt_api, fkwargs={"concert_content": concert_content}, tries=3)
                 if completion:
                     response = completion.choices[0].message
                     if response:
@@ -142,17 +144,17 @@ class CrawlerHandleData():
 
             # concert singer update
             singer_info_service = SingerInfoService()
-            concert_singer_name = getattr(data, 'concert_singer_name', None)
+            concert_singer_name = data.get('concert_singer_name', None)
             signer_id = singer_info_service.find_singer_info_by_name_or_create_new(concert_singer_name)
 
             # concert location update
             concert_location_service = ConcertLocationService()
-            concert_location_name = getattr(data, 'concert_location_name', None)
+            concert_location_name = data.get('concert_location_name', None)
             concert_location_id = concert_location_service.find_concert_location_by_name_or_create_new(concert_location_name)
 
             # update concert info
-            concert_info_id = getattr(data, 'concert_info_id', None)
-
+            concert_info_id = data.get('concert_info_id', None)
+            print('save all data id:{}'.format(concert_info_id))
             concert_info_service = ConcertInfoService()
             concert_info_update_data = {
                 'concert_info_location_id': concert_location_id,
@@ -163,8 +165,8 @@ class CrawlerHandleData():
             
 
             # concert_time_table
-            concert_time = getattr(data, 'concert_time', None)
-            sell_ticket_time = getattr(data, 'sell_ticket_time', None)
+            concert_time = data.get('concert_time', None)
+            sell_ticket_time = data.get('sell_ticket_time', None)
 
             concert_time_table_service = ConcertTimeTableService()
             concert_time_table_service.delete_concert_time_table_by_concert_info_id(concert_info_id)
