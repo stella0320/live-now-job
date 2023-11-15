@@ -11,7 +11,12 @@ class TixCraftCrawler():
         pass
 
     def request_url(self, url = None):
-        web = requests.get(url, timeout=20)
+        
+        proxies = {
+            'http': 'https://c48c-2402-7500-487-be10-e528-d2a5-9153-7815.ngrok-free.app/',
+            'https': 'https://c48c-2402-7500-487-be10-e528-d2a5-9153-7815.ngrok-free.app/',
+        }
+        web = requests.get(url, timeout=50, proxies=proxies)
         status = web.status_code
         if status == 200:
             return web
