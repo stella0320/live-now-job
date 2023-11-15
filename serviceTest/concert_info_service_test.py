@@ -10,7 +10,6 @@ class ConcertInfoServiceTest():
         service = ConcertInfoService()
 
         data_obj = {
-            "concert_info_id": 2,
             "concert_info_name": 'MC Hot DogXXX',
             "concert_info_ticket_system_id": 1,
         }
