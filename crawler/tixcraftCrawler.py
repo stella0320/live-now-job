@@ -78,7 +78,7 @@ class TixCraftCrawler():
     
 
 if __name__ == '__main__':
-    ip = '35.209.198.222:80'
+    ip = 'https://52.24.114.12:443'
     proxies = {
             'https': ip,
             'http': ip
@@ -89,7 +89,7 @@ if __name__ == '__main__':
         'Accept-Encoding': 'gzip, deflate, br',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0'
     }
-    web = requests.get("https://tixcraft.com/activity", timeout=50, headers=headers)
+    web = requests.get("https://www.indievox.com/activity/detail/23_iv0262996", timeout=50)
     status = web.status_code
 
     print(status)

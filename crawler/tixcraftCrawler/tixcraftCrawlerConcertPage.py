@@ -11,7 +11,17 @@ class TixCraftCrawlerConcertPage():
         self._concert_text_list=[]
 
     def request_url(self, url = None):
-        web = requests.get(url, timeout=20)
+        headers = {
+            'Accept-Language': 'zh-TW,zh;q=0.9,en;q=0.8,en-US;q=0.7',
+            'Content-Type': 'text/html',
+            'Upgrade-Insecure-Requests':'1',
+            'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+        }
+        proxies = {
+            'https': 'https://www.president.gov.tw/Default.aspx',
+        }
+        web = requests.get(url, timeout=20, proxies=proxies)
+        
         status = web.status_code
         print("子處理程序 ID: {}, 運送結果: {}, processTime:{}".format(os.getpid(), url, process_time()))
         if status == 200:
