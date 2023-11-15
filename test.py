@@ -4,10 +4,15 @@ from serviceTest.concert_location_service_test import ConcertLocationServiceTest
 from serviceTest.concert_time_table_service_test import ConcertTimeTableServiceTest
 
 def concert_info_test():
+
+    test_concert_info1 = ConcertInfoServiceTest()
+    test_concert_info1.test_create_concert_info()
     test_concert_info = ConcertInfoServiceTest()
     # test.test_update_column_values_by_id()
-    data = test_concert_info.test_create_concert_info()
+    data = test_concert_info.test_find_concert_info_by_name()
     print(data)
+
+    
 
 
 def singer_info_test():
