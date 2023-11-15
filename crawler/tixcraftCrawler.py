@@ -13,10 +13,15 @@ class TixCraftCrawler():
     def request_url(self, url = None):
         
         proxies = {
-            'http': 'https://c48c-2402-7500-487-be10-e528-d2a5-9153-7815.ngrok-free.app/',
-            'https': 'https://c48c-2402-7500-487-be10-e528-d2a5-9153-7815.ngrok-free.app/',
+            'https': 'https://f89b-2402-7500-487-be10-e528-d2a5-9153-7815.ngrok-free.app/',
         }
-        web = requests.get(url, timeout=50, proxies=proxies)
+
+        headers = {
+            'Content-Type': 'text/html',
+            'ngrok-skip-browser-warning': 'XXX',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0'
+        }
+        web = requests.get(url, timeout=50, headers = headers, proxies=proxies)
         status = web.status_code
         if status == 200:
             return web
@@ -70,8 +75,24 @@ class TixCraftCrawler():
             ticket_list = soup.select('.thumbnails')
 
         return ticket_list
-
     
+
+if __name__ == '__main__':
+    ip = '35.209.198.222:80'
+    proxies = {
+            'https': ip,
+            'http': ip
+    }
+
+    headers = {
+        'Accept-Language': 'zh-TW,zh;q=0.9,en;q=0.8,en-US;q=0.7',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0'
+    }
+    web = requests.get("https://tixcraft.com/activity", timeout=50, headers=headers)
+    status = web.status_code
+
+    print(status)
 
 
 
