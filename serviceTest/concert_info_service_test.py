@@ -10,7 +10,7 @@ class ConcertInfoServiceTest():
         service = ConcertInfoService()
 
         data_obj = {
-            "concert_info_name": 'MC Hot DogXXX',
+            "concert_info_name": 'MC HotDog熱狗「髒藝術家」2023台北小巨蛋演唱會',
             "concert_info_ticket_system_id": 1,
         }
         service.create_concert_info(data_obj)
