@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 ADD . /app/live-now-job
 
-CMD python3 tixcraftJob_process.py
+CMD python3 chat_gpt_test.py
