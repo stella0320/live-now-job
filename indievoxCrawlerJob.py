@@ -16,7 +16,7 @@ def compare_S3_and_transfer_data_by_chat_gpt(item_data):
 
 def run_compare_S3_and_transfer_data_by_chat_gpt(concert_list):
     print('handle S3 & chat gpt 主處理程序 ID:', os.getpid())
-    pool = Pool(4)
+    pool = Pool(1)
     result = pool.map(compare_S3_and_transfer_data_by_chat_gpt, concert_list)
     pool.close()
     pool.join()
