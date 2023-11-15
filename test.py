@@ -6,8 +6,8 @@ from serviceTest.concert_time_table_service_test import ConcertTimeTableServiceT
 def concert_info_test():
     test_concert_info = ConcertInfoServiceTest()
     # test.test_update_column_values_by_id()
-    data = test_concert_info.test_find_concert_info_by_name()
-    print(getattr(data, 'concert_info_id', 'XXX'))
+    data = test_concert_info.test_create_concert_info()
+    print(data)
 
 
 def singer_info_test():
@@ -28,7 +28,7 @@ def concert_time_table_test():
     test.test_delete_concert_time_table_by_concert_info_id()
 
 if __name__ == '__main__':
-   singer_info_test()
+   concert_info_test()
     
 
     
