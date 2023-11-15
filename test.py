@@ -11,6 +11,7 @@ def concert_info_test():
     # test.test_update_column_values_by_id()
     data = test_concert_info.test_find_concert_info_by_name()
     print(data)
+    print('finish')
 
     
 

@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 ADD . /app/live-now-job
 
-CMD python3 indievoxCrawlerJob.py
+CMD python3 test.py
