@@ -51,8 +51,8 @@ if __name__ == '__main__':
     print(t2-t1)
     result = []
     if concert_list:
-        # test_data = concert_list[4:6]
-        crawlerHandleData = CrawlerHandleData(concert_list)
+        test_data = concert_list[:6]
+        crawlerHandleData = CrawlerHandleData(test_data)
         crawlerHandleData.save_concert_info_data()
         result = run_compare_S3_and_transfer_data_by_chat_gpt(crawlerHandleData.get_concert_list())
         #####處理資料#####

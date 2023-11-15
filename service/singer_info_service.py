@@ -46,7 +46,7 @@ class SingerInfoService():
             except Exception as e:
                 print(str(e))
         
-        if not singer:
+        if not singer and name:
             try:
                 self.__session__.add(SingerInfo(name))
                 self.__session__.commit()
@@ -55,6 +55,9 @@ class SingerInfoService():
             except Exception as e:
                 self.__session__.rollback()
                 print(str(e))
+            finally:
+                self.__session__.close()
+        if singer:
+            return getattr(singer, 'singer_info_id', None)
         
-        self.__session__.close()
-        return getattr(singer, 'singer_info_id')
+        return None

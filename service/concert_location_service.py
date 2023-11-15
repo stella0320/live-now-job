@@ -20,7 +20,9 @@ class ConcertLocationService():
             except Exception as e:
                 print(str(e))
         
-        if not concert_location:
+                
+
+        if not concert_location and name:
             try:
                 self.__session__.add(ConcertLocation(name))
                 self.__session__.commit()
@@ -31,4 +33,8 @@ class ConcertLocationService():
                 print(str(e))
         
         self.__session__.close()
-        return getattr(concert_location, 'concert_location_id')
+
+        if concert_location:
+            return getattr(concert_location, 'concert_location_id')
+        
+        return None

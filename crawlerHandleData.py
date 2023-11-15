@@ -140,11 +140,13 @@ class CrawlerHandleData():
 
             # concert singer update
             singer_info_service = SingerInfoService()
-            signer_id = singer_info_service.find_singer_info_by_name_or_create_new(data['concert_singer_name'])
+            concert_singer_name = getattr(data, 'concert_singer_name', None)
+            signer_id = singer_info_service.find_singer_info_by_name_or_create_new(concert_singer_name)
 
             # concert location update
             concert_location_service = ConcertLocationService()
-            concert_location_id = concert_location_service.find_concert_location_by_name_or_create_new(data['concert_location_name'])
+            concert_location_name = getattr(data, 'concert_location_name', None)
+            concert_location_id = concert_location_service.find_concert_location_by_name_or_create_new(concert_location_name)
 
             # update concert info
             concert_info_id = data['concert_info_id']
