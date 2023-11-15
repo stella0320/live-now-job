@@ -40,12 +40,11 @@ class ConcertInfoService():
                 stmt = update(ConcertInfo).where(ConcertInfo.concert_info_id == primary_key_value).values(update_values)
                 self.__session__.execute(stmt)
                 self.__session__.commit()
-                
             except Exception as e:
                 self.__session__.rollback()
                 print(str(e))
-
-            self.__session__.close()
+            finally:
+                self.__session__.close()
 
     def query_concert_info_by_id(self, concert_info_id):
         
@@ -54,10 +53,9 @@ class ConcertInfoService():
             try:
                 concert_info = self.__session__.query(ConcertInfo).get(concert_info_id)
             except Exception as e:
-
                 print(str(e))
-
-            self.__session__.close()
+            finally:
+                self.__session__.close()
         
         return concert_info
     
@@ -68,6 +66,7 @@ class ConcertInfoService():
                 list = self.__session__.query(ConcertInfo).filter_by(concert_info_name=name).all()
             except Exception as e:
                 print(str(e))
-            self.__session__.close()
+            finally:
+                self.__session__.close()
         
         return list
