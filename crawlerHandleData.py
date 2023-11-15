@@ -125,6 +125,8 @@ class CrawlerHandleData():
     def handle_concert_time_data(self, time_data, concert_info_id, time_table_type):
         result = []
         for data in time_data:
+            if len(data) == 10:
+                data += ' 00:00'
             date_obj = datetime.strptime(data, '%Y-%m-%d %H:%M')
             item = {
                 'concert_time_table_type':time_table_type,
