@@ -66,7 +66,5 @@ class ConcertInfoService():
                 list = self.__session__.query(ConcertInfo).filter_by(concert_info_name=name).all()
             except Exception as e:
                 print(e)
-            finally:
-                self.__session__.close()
-        
+
         return list
