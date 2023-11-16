@@ -76,7 +76,7 @@ class CrawlerHandleData():
         completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You will be provided with unstructured chinese html text, and your task is to parse it into json format like this {'concert_time': list of YYYY-MM-E hh:mm, 'sell_ticket_time': list of  YYYY-MM-EE hh:mm, concert_singer_name: string ,concert_location:string}."},
+                {"role": "system", "content": "You will be provided with unstructured chinese html text, and your task is to parse it into json format like this {'concert_time': list of YYYY-MM-dd hh:mm, 'sell_ticket_time': list of  YYYY-MM-dd hh:mm, concert_singer_name: string ,concert_location:string}."},
                 {"role": "user", "content": concert_content}
             ],
             temperature=0,
@@ -107,7 +107,6 @@ class CrawlerHandleData():
             check_s3_result = self.check_s3_content_same(item_data, crawl_web_func)
             
             if not check_s3_result['check_result']:
-                print(f'concert_info_id:{item_data["concert_info_id"]}')
                 # 如果文本沒有重複，跑chatgpt
                 print('=========比對S3結束========')
                 concert_json_data = self.transfer_json_data_by_chat_gpt(check_s3_result['concert_content'])

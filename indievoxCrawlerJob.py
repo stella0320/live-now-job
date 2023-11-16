@@ -22,6 +22,24 @@ def run_compare_S3_and_transfer_data_by_chat_gpt(concert_list):
     pool.join()
     return result
 
+def special_handle_concert_time_data(concert_data):
+    print('special_handle_concert_time_data 子處理程序 ID:', os.getpid())
+    concert_info_page_url = concert_data.get('concert_info_page_url', None)
+    if concert_info_page_url:
+        indievoxCrawler = IndievoxCrawlerAllPartner()
+        time_page_url = concert_info_page_url.replace('detail', 'game')
+        indievoxCrawler.handle_concert_time_table(concert_data, time_page_url)
+    
+    return concert_data
+
+def run_special_handle_concert_time_data(concert_list):
+    list = [data for data in concert_list if data]
+    print('special_handle_concert_time_data 主處理程序 ID:', os.getpid())
+    pool = Pool(4)
+    result = pool.map(special_handle_concert_time_data, list)
+    pool.close()
+    pool.join()
+    return result
 
 if __name__ == '__main__':
     t1 = process_time()
@@ -55,16 +73,13 @@ if __name__ == '__main__':
         crawlerHandleData = CrawlerHandleData(concert_list)
         crawlerHandleData.save_concert_info_data()
         concert_item_list = crawlerHandleData.get_concert_list()
-        result = [compare_S3_and_transfer_data_by_chat_gpt(item_data) for item_data in concert_item_list if item_data]
-        
-        for item in result:
-            concert_info_page_url = item.get('concert_info_page_url', None)
-            if concert_info_page_url:
-                time_page_url = concert_info_page_url.replace('detail', 'game')
-                indievoxCrawler.handle_concert_time_table(item, time_page_url)
+        list_S3_chat_gpt = [compare_S3_and_transfer_data_by_chat_gpt(item_data) for item_data in concert_item_list if item_data]
+        result = run_special_handle_concert_time_data(list_S3_chat_gpt)
+        print(len(result))
         
         # result = run_compare_S3_and_transfer_data_by_chat_gpt(crawlerHandleData.get_concert_list())
         #####處理資料#####
         if len(result) > 0:
             for data in result:
-                crawlerHandleData.save_concert_all_data(data)
+                if data:
+                    crawlerHandleData.save_concert_all_data(data)
