@@ -2,7 +2,7 @@ FROM python:3.10.12-slim
  
 WORKDIR /app/live-now-job
 
-RUN apt-get update && apt-get install -y cron && cron
+RUN apt-get update && apt-get -y install cron
 
 # ADD ./requirements.txt /app/live-now-job/requirements.txt
 COPY . /app/live-now-job
@@ -12,8 +12,11 @@ COPY crontab /etc/cron.d/crontab
 
 
 
-RUN chmod +x hello.py
+RUN chmod 0644 /etc/cron.d/crontab
 RUN crontab /etc/cron.d/crontab
+RUN touch /var/log/cron.log
+
+
 
 # CMD python3 indievoxCrawlerJob.py
-CMD ["cron", "-f"]
+CMD cron && tail -f /var/log/cron.log
