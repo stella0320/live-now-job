@@ -55,11 +55,13 @@ if __name__ == '__main__':
         crawlerHandleData = CrawlerHandleData(concert_list)
         crawlerHandleData.save_concert_info_data()
         concert_item_list = crawlerHandleData.get_concert_list()
-        result = [compare_S3_and_transfer_data_by_chat_gpt(item_data) for item_data in concert_item_list]
+        result = [compare_S3_and_transfer_data_by_chat_gpt(item_data) for item_data in concert_item_list if item_data]
         
         for item in result:
-            time_page_url = item['concert_info_page_url'].replace('detail', 'game')
-            indievoxCrawler.handle_concert_time_table(item, time_page_url)
+            concert_info_page_url = item.get('concert_info_page_url', None)
+            if concert_info_page_url:
+                time_page_url = concert_info_page_url.replace('detail', 'game')
+                indievoxCrawler.handle_concert_time_table(item, time_page_url)
         
         # result = run_compare_S3_and_transfer_data_by_chat_gpt(crawlerHandleData.get_concert_list())
         #####處理資料#####

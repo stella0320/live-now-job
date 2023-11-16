@@ -118,10 +118,11 @@ class CrawlerHandleData():
                 item_data['sell_ticket_time'] = concert_json_data.get('sell_ticket_time')
                 item_data['concert_singer_name'] = concert_json_data.get('concert_singer_name')
                 item_data['concert_location_name'] = concert_json_data.get('concert_location')
+                return item_data
         except AttributeError as e:
             print(f"Exception:{e}")
         
-        return item_data
+        return None
 
 
     def handle_concert_time_data(self, time_data, concert_info_id, time_table_type):

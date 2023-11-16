@@ -8,6 +8,10 @@ from io import BytesIO
 import requests
 from retry import retry
 from retry.api import retry_call
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 
 class S3UploadFileApi:
     
@@ -38,13 +42,13 @@ class S3UploadFileApi:
         s3_resource = boto3.client("s3")
         current_GMT = time.gmtime()
         time_stamp = calendar.timegm(current_GMT)
-        fileName = 'live_now/concert_' + str(concert_id) + '.txt' # modify
+        fileName = 'live_now/'+ os.getenv('MODE') +'/concert_' + str(concert_id) + '.txt' # modify
         file_data = BytesIO(text_content.encode('utf-8')) 
         s3_resource.upload_fileobj(file_data, 'my-image-jc', fileName, ExtraArgs={ "ContentType": "text/html; charset=UTF-8"})
         return fileName
     
     def check_concert_content_same_from_cloud_front(self, new_concert_content, concert_id):
-        url = 'https://d305hij1yblnjs.cloudfront.net/live_now/concert_' + str(concert_id) + '.txt'
+        url = 'https://d305hij1yblnjs.cloudfront.net/live_now/'+ os.getenv('MODE') + '/concert_' + str(concert_id) + '.txt'
         concert_content = retry_call(self.request_url, fkwargs={"url": url}, tries=3)
         if concert_content:
             concert_content.encoding = 'utf-8'
