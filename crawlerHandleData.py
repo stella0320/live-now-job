@@ -114,10 +114,10 @@ class CrawlerHandleData():
                 print(concert_json_data)
                 print('=========chatgpt結束========')
 
-                item_data['concert_time'] = concert_json_data['concert_time']
-                item_data['sell_ticket_time'] = concert_json_data['sell_ticket_time']
-                item_data['concert_singer_name'] = concert_json_data['concert_singer_name']
-                item_data['concert_location_name'] = concert_json_data['concert_location']
+                item_data['concert_time'] = concert_json_data.get('concert_time')
+                item_data['sell_ticket_time'] = concert_json_data.get('sell_ticket_time')
+                item_data['concert_singer_name'] = concert_json_data.get('concert_singer_name')
+                item_data['concert_location_name'] = concert_json_data.get('concert_location')
         except AttributeError as e:
             print(f"Exception:{e}")
         
@@ -127,9 +127,13 @@ class CrawlerHandleData():
     def handle_concert_time_data(self, time_data, concert_info_id, time_table_type):
         result = []
         for data in time_data:
-            if len(data) == 10:
-                data += ' 00:00'
-            date_obj = datetime.strptime(data, '%Y-%m-%d %H:%M')
+            date_obj = None
+            try:
+                if len(data) == 10:
+                    data += ' 00:00'
+                date_obj = datetime.strptime(data, '%Y-%m-%d %H:%M')
+            except Exception as e:
+                print(e)
             item = {
                 'concert_time_table_type':time_table_type,
                 'concert_info_id':concert_info_id,
@@ -141,44 +145,42 @@ class CrawlerHandleData():
 
     def save_concert_all_data(self, data):
         if data:
+            try:
+                # concert singer update
+                singer_info_service = SingerInfoService()
+                concert_singer_name = data.get('concert_singer_name', None)
+                signer_id = singer_info_service.find_singer_info_by_name_or_create_new(concert_singer_name)
 
-            # concert singer update
-            singer_info_service = SingerInfoService()
-            concert_singer_name = data.get('concert_singer_name', None)
-            signer_id = singer_info_service.find_singer_info_by_name_or_create_new(concert_singer_name)
+                # concert location update
+                concert_location_service = ConcertLocationService()
+                concert_location_name = data.get('concert_location_name', None)
+                concert_location_id = concert_location_service.find_concert_location_by_name_or_create_new(concert_location_name)
 
-            # concert location update
-            concert_location_service = ConcertLocationService()
-            concert_location_name = data.get('concert_location_name', None)
-            concert_location_id = concert_location_service.find_concert_location_by_name_or_create_new(concert_location_name)
+                # update concert info
+                concert_info_id = data.get('concert_info_id', None)
+                print('save all data id:{}'.format(concert_info_id))
+                concert_info_service = ConcertInfoService()
+                concert_info_update_data = {
+                    'concert_info_location_id': concert_location_id,
+                    'concert_info_singer_id':signer_id
+                }
+                concert_info_service.update_column_values_by_id(concert_info_update_data, concert_info_id)
+                # concert_time_table
+                concert_time = data.get('concert_time', None)
+                sell_ticket_time = data.get('sell_ticket_time', None)
 
-            # update concert info
-            concert_info_id = data.get('concert_info_id', None)
-            print('save all data id:{}'.format(concert_info_id))
-            concert_info_service = ConcertInfoService()
-            concert_info_update_data = {
-                'concert_info_location_id': concert_location_id,
-                'concert_info_singer_id':signer_id
-            }
-            concert_info_service.update_column_values_by_id(concert_info_update_data, concert_info_id)
+                concert_time_table_service = ConcertTimeTableService()
+                concert_time_table_service.delete_concert_time_table_by_concert_info_id(concert_info_id)
 
-            
+                if concert_time and len(concert_time) > 0:
+                    concert_time_list = self.handle_concert_time_data(concert_time, concert_info_id, '演出時間')
+                    concert_time_table_service_for_concert_time = ConcertTimeTableService()
+                    concert_time_table_service_for_concert_time.creat_concert_time_list(concert_time_list)
 
-            # concert_time_table
-            concert_time = data.get('concert_time', None)
-            sell_ticket_time = data.get('sell_ticket_time', None)
-
-            concert_time_table_service = ConcertTimeTableService()
-            concert_time_table_service.delete_concert_time_table_by_concert_info_id(concert_info_id)
-
-            if concert_time and len(concert_time) > 0:
-                concert_time_list = self.handle_concert_time_data(concert_time, concert_info_id, '演出時間')
-                concert_time_table_service_for_concert_time = ConcertTimeTableService()
-                concert_time_table_service_for_concert_time.creat_concert_time_list(concert_time_list)
-
-            if sell_ticket_time and len(sell_ticket_time) > 0:
-                sell_ticket_time_list = self.handle_concert_time_data(sell_ticket_time, concert_info_id, '售票時間')
-                concert_time_table_service_for_sell_ticket_time = ConcertTimeTableService()
-                concert_time_table_service_for_sell_ticket_time.creat_concert_time_list(sell_ticket_time_list)
-
+                if sell_ticket_time and len(sell_ticket_time) > 0:
+                    sell_ticket_time_list = self.handle_concert_time_data(sell_ticket_time, concert_info_id, '售票時間')
+                    concert_time_table_service_for_sell_ticket_time = ConcertTimeTableService()
+                    concert_time_table_service_for_sell_ticket_time.creat_concert_time_list(sell_ticket_time_list)
+            except Exception as e:
+                print(e)
 
