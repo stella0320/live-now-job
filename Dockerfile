@@ -13,7 +13,7 @@ COPY crontab /etc/cron.d/hello-crontab
 
 
 RUN chmod 0644 /etc/cron.d/hello-crontab
-RUN crontab /etc/cron.d/hello-crontab
+
 RUN touch /var/log/cron.log
 
 
