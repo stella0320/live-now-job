@@ -8,7 +8,7 @@ RUN apt-get update && apt-get -y install cron
 
 COPY ./resource/cron/root /etc/cron.d/crontab
 
-RUN pip install -r requirements.txt
+# RUN pip install -r requirements.txt
 
 ADD . /app/live-now-job
 
