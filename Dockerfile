@@ -13,7 +13,7 @@ COPY ./resource/cron/root /etc/cron.d/crontab
 ADD . /app/live-now-job
 
 RUN chmod 0644 /etc/cron.d/crontab
-RUN /usr/bin/crontab /etc/cron.d/crontab
+RUN ./resource/cron/root /etc/cron.d/crontab
 
 # CMD python3 indievoxCrawlerJob.py
 CMD ["cron", "-f", "-d", "8"]
