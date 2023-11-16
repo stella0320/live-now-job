@@ -2,7 +2,7 @@ FROM python:3.10.12-slim
  
 WORKDIR /app/live-now-job
 
-RUN apt-get -y install cron
+RUN apt-get update && apt-get -y install cron
 
 ADD ./requirements.txt /app/live-now-job/requirements.txt
 
