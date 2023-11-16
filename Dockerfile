@@ -19,4 +19,4 @@ RUN touch /var/log/cron.log
 
 
 # CMD python3 indievoxCrawlerJob.py
-CMD cron -f -d 8
+CMD ["cron", "-f"]
