@@ -1,3 +1,0 @@
-# crontab script
-# min   hour    day     month   weekday command
-1       *       *       *       *       python3 /app/live-now-job/hello.py
