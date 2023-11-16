@@ -24,7 +24,7 @@ class ConnectDb():
             )
             # url = "mysql://root:root@localhost/live_now"
             # engine = create_engine(url, pool_size=20)
-            engine = create_engine(url_object, pool_size=20)
+            engine = create_engine(url_object, pool_size=30)
             # engine = create_engine(url_object, pool_size=50, echo=True)
         except Exception as e:
             print(msg=str(e))
