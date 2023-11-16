@@ -8,7 +8,7 @@ from multiprocessing import Pool
 import os
 
 def compare_S3_and_transfer_data_by_chat_gpt(item_data):
-    print(" 子處理程序 ID:{}, concert_id:{}".format(os.getpid(), item_data['concert_info_id']))
+    print(" 子處理程序 ID:{}, concert_id:{}".format(os.getpid(), item_data.get('concert_info_id')))
     indievoxCrawler = IndievoxCrawlerAllPartner()
     crawlerHandleData = CrawlerHandleData()
     return crawlerHandleData.compare_S3_and_transfer_data_by_chat_gpt(item_data, indievoxCrawler.get_concert_info_html)
