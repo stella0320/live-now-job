@@ -2,10 +2,18 @@ FROM python:3.10.12-slim
  
 WORKDIR /app/live-now-job
 
+RUN apt-get -y install cron
+
 ADD ./requirements.txt /app/live-now-job/requirements.txt
+
+COPY ./resource/cron/root /etc/cron.d/crontab
 
 RUN pip install -r requirements.txt
 
 ADD . /app/live-now-job
 
-CMD python3 indievoxCrawlerJob.py
+RUN chmod 0644 /etc/cron.d/crontab
+RUN /etc/crontab /etc/cron.d/crontab
+
+# CMD python3 indievoxCrawlerJob.py
+CMD ["cron", "-f", "-d", "8"]
