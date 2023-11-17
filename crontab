@@ -1,6 +1,3 @@
 #!/bin/bash
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-
 # min   hour    day     month   weekday command
 1 * * * * root python3 /app/live-now-job/hello.py >> /var/log/cron-`date +\%Y-\%m-\%d`.log 2>&1
