@@ -6,15 +6,14 @@ RUN apt-get update && apt-get -y install cron
 
 # ADD ./requirements.txt /app/live-now-job/requirements.txt
 COPY . /app/live-now-job
-COPY crontab /etc/cron.d/hello-crontab
+COPY crontab /etc/cron.d/crontab
 
 # RUN pip install -r requirements.txt
 
 
 
-RUN chmod 0644 /etc/cron.d/hello-crontab
+# RUN chmod 0644 /etc/cron.d/crontab
 
-RUN touch /var/log/cron.log
-
-# CMD python3 indievoxCrawlerJob.py
+# RUN touch /var/log/cron/cron.log
+# -f  ：強制進行，而不去判斷時間記錄檔的時間戳記；
 CMD ["cron", "-f"]
