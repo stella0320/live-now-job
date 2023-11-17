@@ -17,4 +17,4 @@ RUN chmod 0644 /etc/cron.d/hello-crontab
 RUN touch /var/log/cron.log
 
 # CMD python3 indievoxCrawlerJob.py
-CMD ["sudo" ,"cron", "-f"]
+CMD ["cron", "-f"]
