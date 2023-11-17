@@ -1,4 +1,4 @@
-FROM python:3.10.12-slim
+FROM python:3.10.12
  
 WORKDIR /app/live-now-job
 
@@ -7,7 +7,7 @@ RUN apt-get update && apt-get -y install cron vim
 # ADD ./requirements.txt /app/live-now-job/requirements.txt
 COPY . /app/live-now-job
 RUN chmod 0644 /app/live-now-job/hello.py
-ADD crontab /etc/cron.d/crontab
+COPY crontab /etc/cron.d/crontab
 
 # RUN pip install -r requirements.txt
 
