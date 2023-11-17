@@ -13,7 +13,7 @@ COPY crontab /etc/cron.d/crontab
 
 
 RUN chmod 0644 /etc/cron.d/crontab
-RUN mkdir /var/log/cron
+RUN mkdir -p /var/log/cron
 # RUN chmod 0644 /var/log/cron
 RUN touch /var/log/cron/cron-2023-11-17.log
 RUN touch /var/log/cron-2023-11-17.log
