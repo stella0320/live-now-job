@@ -78,7 +78,7 @@ class TixCraftCrawler():
     
 
 if __name__ == '__main__':
-    ip = 'https://52.24.114.12:443'
+    ip = 'http://114.37.217.13:80'
     proxies = {
             'https': ip,
             'http': ip
