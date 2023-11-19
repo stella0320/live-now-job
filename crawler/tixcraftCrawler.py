@@ -21,7 +21,17 @@ class TixCraftCrawler():
             'ngrok-skip-browser-warning': 'XXX',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0'
         }
-        web = requests.get(url, timeout=50, headers = headers, proxies=proxies)
+
+        web = requests.get(
+            url='https://proxy.scrapeops.io/v1/',
+            params={
+                'api_key': 'c32fcd1f-6c4f-4022-b37b-ebc280574496',
+                'url': url, 
+                'country': 'tw'
+            },
+        )
+
+        # web = requests.get(url, timeout=50, headers = headers, proxies=proxies)
         status = web.status_code
         if status == 200:
             return web
@@ -78,21 +88,34 @@ class TixCraftCrawler():
     
 
 if __name__ == '__main__':
-    ip = 'http://114.37.217.13:80'
-    proxies = {
-            'https': ip,
-            'http': ip
-    }
 
-    headers = {
-        'Accept-Language': 'zh-TW,zh;q=0.9,en;q=0.8,en-US;q=0.7',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0'
-    }
-    web = requests.get("https://www.indievox.com/activity/detail/23_iv0262996", timeout=50)
-    status = web.status_code
+    response = requests.get(
+        url='https://proxy.scrapeops.io/v1/',
+        params={
+            'api_key': 'c32fcd1f-6c4f-4022-b37b-ebc280574496',
+            'url': 'https://tixcraft.com/activity', 
+            'country': 'tw'
+        },
+    )
 
-    print(status)
+    print('Response Body: ', response.status_code)
+    
+    
+    # ip = 'http://114.37.217.13:80'
+    # proxies = {
+    #     'https': ip,
+    #     'http': ip
+    # }
+
+    # headers = {
+    #     'Accept-Language': 'zh-TW,zh;q=0.9,en;q=0.8,en-US;q=0.7',
+    #     'Accept-Encoding': 'gzip, deflate, br',
+    #     'User-Agent': 'python-requests/2.26.0'
+    # }
+    # web = requests.get("https://tixcraft.com/", headers= headers, timeout=50)
+    # status = web.status_code
+
+    # print(status)
 
 
 
