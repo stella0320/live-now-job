@@ -1,5 +1,6 @@
-from service.concert_time_table_service import ConcertTimeTableService
+from ..service.concert_time_table_service import ConcertTimeTableService
 import datetime
+
 
 class ConcertTimeTableServiceTest():
 
@@ -8,10 +9,10 @@ class ConcertTimeTableServiceTest():
             'concert_info_id': 328,
             'concert_time_table_type': '演出時間',
             'concert_time_table_datetime': datetime.date.today()
-        },{
+        }, {
             'concert_info_id': 328,
             'concert_time_table_type': '售票時間',
-            'concert_time_table_datetime':datetime.date.today()
+            'concert_time_table_datetime': datetime.date.today()
         }]
 
         service = ConcertTimeTableService()
