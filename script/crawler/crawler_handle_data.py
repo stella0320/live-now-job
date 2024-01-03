@@ -92,8 +92,8 @@ class CrawlerHandleData():
             max_tokens=500
         )
         return completion
-    # Open AI API
 
+    # Open AI API
     def transfer_json_data_by_chat_gpt(self, concert_content):
         if concert_content:
             try:

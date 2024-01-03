@@ -1,6 +1,8 @@
 from ..model.singer_info import SingerInfo
 from ..util.db.connect_mysql_db import ConnectDb
 from sqlalchemy import MetaData, Table, update, select
+from ..api.kkbox_api import KkboxApi
+from script.api import kkbox_api
 
 
 class SingerInfoService():
@@ -23,6 +25,28 @@ class SingerInfoService():
                 print(str(e))
 
             self.__session__.close()
+
+    def update_all_singer_image(self):
+        all_singer_info = self.__session__.query(SingerInfo).all()
+        kkbox_api = KkboxApi()
+        update_data_list = []
+        for singer_info in all_singer_info:
+            singer_info_name = getattr(singer_info, 'singer_info_name')
+            singer_image_url = kkbox_api.search_image_url_by_singer_name_retry(
+                singer_info_name)
+            if singer_image_url:
+                singer_info_id = getattr(singer_info, 'singer_info_id')
+                obj = {
+                    'singer_info_id': singer_info_id,
+                    'singer_info_image_url': singer_image_url
+                }
+                update_data_list.append(obj)
+
+        if update_data_list:
+            self.__session__.execute(
+                update(SingerInfo), update_data_list, )
+            self.__session__.commit()
+        self.__session__.close()
 
     def find_singer_info_by_name(self, name):
         singer = None
@@ -47,7 +71,14 @@ class SingerInfoService():
 
         if not singer and name:
             try:
-                self.__session__.add(SingerInfo(name))
+                kkbox_api = KkboxApi()
+                singer_image_url = kkbox_api.search_image_url_by_singer_name_retry(
+                    name)
+                data_obj = {
+                    'singer_info_name': name,
+                    'singer_info_image_url': singer_image_url
+                }
+                self.__session__.add(SingerInfo(**data_obj))
                 self.__session__.commit()
                 singer = self.__session__.query(SingerInfo).filter_by(
                     singer_info_name=name).first()

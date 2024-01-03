@@ -2,6 +2,9 @@ import script.service_test.concert_info_service_test as concert_info_service_tes
 import script.service_test.singer_info_service_test as singer_info_service_test
 import script.service_test.concert_location_service_test as concert_location_service_test
 import script.service_test.concert_time_table_service_test as concert_time_table_service_test
+import script.api.kkbox_api as kkbox_api
+import difflib
+import script.service.singer_info_service as singer_info_service
 
 
 def concert_info_test():
@@ -22,6 +25,7 @@ def singer_info_test():
 
     # singer_info_serice_test.test_find_singer_info_by_name_or_create_new1()
     # singer_info_serice_test.test_find_singer_info_by_name_or_create_new2()
+    singer_info_serice_test.test_update_all_singer_image()
 
 
 def concert_location_test():
@@ -35,5 +39,34 @@ def concert_time_table_test():
     # test.test_delete_concert_time_table_by_concert_info_id()
 
 
+def kkbox_api_test():
+    kkbox_api = kkbox_api.KkboxApi()
+    singer_name = '徐佳瑩'
+    result = kkbox_api.search_by_singer_name_retry(singer_name)
+    if result.status_code == 200:
+
+        data = result.json()['artists']['data']
+        # print(data)
+        result = None
+        max_simiar_value = 0
+        for row in data:
+            name = row.get('name')
+            matcher = difflib.SequenceMatcher(None, singer_name, name)
+            similarity = matcher.ratio()
+            new_data = {
+                'name': name,
+                'image_url': row.get('images')[1],
+                'similar': similarity
+            }
+
+            print(new_data)
+            if similarity > max_simiar_value:
+                max_simiar_value = similarity
+                result = new_data
+
+        print(result)
+
+
 if __name__ == '__main__':
-    concert_time_table_test()
+
+    singer_info_test()

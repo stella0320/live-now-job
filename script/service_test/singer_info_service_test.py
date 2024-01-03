@@ -31,3 +31,7 @@ class SingerInfoServiceTest():
         singer_id = service.find_singer_info_by_name_or_create_new(
             '徐佳瑩 - TEST')
         print(singer_id)
+
+    def test_update_all_singer_image(self):
+        service = SingerInfoService()
+        service.update_all_singer_image()
