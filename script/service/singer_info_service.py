@@ -32,6 +32,7 @@ class SingerInfoService():
         update_data_list = []
         for singer_info in all_singer_info:
             singer_info_name = getattr(singer_info, 'singer_info_name')
+            print(singer_info_name)
             singer_image_url = kkbox_api.search_image_url_by_singer_name_retry(
                 singer_info_name)
             if singer_image_url:
