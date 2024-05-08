@@ -3,7 +3,7 @@ version: "3"
 services:
 
   cron-job:
-    build: ./app/live-now-job
+    build: ./
     image: image-live-now-job
     container_name: live_now_job_container
     env_file:
