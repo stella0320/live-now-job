@@ -3,16 +3,16 @@ version: "3"
 services:
 
   cron-job:
-    build: ./app
+    build: ./
     image: image-live-now-job
     container_name: live_now_job_container
     env_file:
       # - ./env/live_now_job.env
       # - .env # local
-      - ./env/live_now_job.env
+      - ../../env/live_now_job.env
     volumes:
       - type: bind
-        source: ./log/live_now_cron #local
+        source: ../../log/live_now_cron #local
         target: /var/log/cron
       
         
