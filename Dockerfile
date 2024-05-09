@@ -16,7 +16,7 @@ RUN chmod 0644 /etc/cron.d/crontab
 RUN /usr/bin/crontab /etc/cron.d/crontab
 
 
-RUN chmod 0644 /app/live-now-job/hello.py
+RUN chmod 0644 /app/live-now-job
 
 
 RUN mkdir -p /var/log/cron

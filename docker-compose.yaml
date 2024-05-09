@@ -12,8 +12,10 @@ services:
       - ../../env/live_now_job.env
     volumes:
       - type: bind
-        source: ../../log/live_now_cron #local
+        source: ../../log/live_now_cron
         target: /var/log/cron
-      
+      - type: bind
+        source: .
+        target: /app/live-now-job
         
 
