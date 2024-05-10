@@ -1,5 +1,5 @@
 #!/bin/bash
 # min   hour    day     month   weekday command
-* 1 * * * /usr/local/bin/python3 /app/live-now-job/run_concert_job.py >> /var/log/cron/cron-concert-`date +\%Y-\%m-\%d`.log
-* 3 * * * /usr/local/bin/python3 /app/live-now-job/run_singer_info_job.py >> /var/log/cron/cron-singer-`date +\%Y-\%m-\%d`.log
+0 */1 * * * /usr/local/bin/python3 /app/live-now-job/run_concert_job.py >> /var/log/cron/cron-concert-`date +\%Y-\%m-\%d`.log
+0 */3 * * * /usr/local/bin/python3 /app/live-now-job/run_singer_info_job.py >> /var/log/cron/cron-singer-`date +\%Y-\%m-\%d`.log
 # End Cron Job
