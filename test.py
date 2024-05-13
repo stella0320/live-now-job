@@ -9,7 +9,10 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 import logging
-logging.basicConfig(level=logging.INFO,
+from datetime import datetime
+today = datetime.now().strftime("%Y-%m-%d")
+logging.basicConfig(filename='/var/log/cron/cron-test-'+ today + '.log',
+                    level=logging.INFO,
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                     datefmt='%m-%d %H:%M')
 # 定義 handler 輸出 sys.stderr
@@ -87,4 +90,6 @@ if __name__ == '__main__':
 
     host = os.getenv('DB_HOST')
     print('test')
+    test_logger.info('log test')
+    test_logger.info(host)
     print(host)
