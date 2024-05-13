@@ -5,7 +5,23 @@ import script.service_test.concert_time_table_service_test as concert_time_table
 import script.api.kkbox_api as kkbox_api
 import difflib
 import script.service.singer_info_service as singer_info_service
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
+import logging
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                    datefmt='%m-%d %H:%M')
+# 定義 handler 輸出 sys.stderr
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+# 設定輸出格式
+formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+# handler 設定輸出格式
+console.setFormatter(formatter)
+# 加入 hander 到 root logger
+logging.getLogger('').addHandler(console)
+test_logger = logging.getLogger('test.app')
 
 def concert_info_test():
 
@@ -69,4 +85,5 @@ def kkbox_api_test():
 
 if __name__ == '__main__':
 
-    singer_info_test()
+    host = os.getenv('DB_HOST')
+    test_logger.info(host)
