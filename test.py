@@ -86,4 +86,5 @@ def kkbox_api_test():
 if __name__ == '__main__':
 
     host = os.getenv('DB_HOST')
-    test_logger.info(host)
+    print('test')
+    print(host)
