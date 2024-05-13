@@ -12,7 +12,7 @@ RUN pip install -r requirements.txt
 
 # modify the permission on crontab file
 COPY ./crontab /etc/cron.d/crontab
-COPY ../../env/live_now_job.env /app/live-now-job/.env
+COPY /home/ubuntu/app-docker/env/live_now_job.env /app/live-now-job/.env
 
 RUN chmod 0644 /etc/cron.d/crontab 
 RUN /usr/bin/crontab /etc/cron.d/crontab
