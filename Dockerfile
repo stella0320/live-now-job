@@ -4,8 +4,8 @@ WORKDIR /app/live-now-job
 
 COPY . /app/live-now-job
 
-RUN apt-get update && apt-get -y install cron vim
-RUN /usr/local/bin/python3 -m pip install --upgrade pip
+# RUN apt-get update && apt-get -y install cron vim
+# RUN /usr/local/bin/python3 -m pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 
